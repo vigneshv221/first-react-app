@@ -1,0 +1,30 @@
+.app {
+    text-align: center;
+    width: 80%;
+    margin: auto;
+    display: block;
+}
+
+.titlebox {
+    text-align: center;
+    font-size: 24px;
+    display: block;
+}
+
+.infobox {
+    text-align: center;
+    font-size: 16px;
+    margin: auto;
+    display: block;
+}
+
+.btn {
+    background-color: transparent;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #ccc;
+    font-size: 18px;
+}
