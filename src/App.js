@@ -6,7 +6,7 @@ import ListArea from "./components/main/ListArea";
 import axios from "axios";
 import "./App.css";
 
-const apikey = process.env.API_KEY;
+const apikey = process.env.REACT_APP_API_KEY;
 
 const config = { headers: { "user-key": apikey } };
 
