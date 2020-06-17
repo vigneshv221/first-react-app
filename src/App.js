@@ -1,10 +1,13 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Alert from "./components/layout/Alert";
 import Search from "./components/main/Search";
 import ListArea from "./components/main/ListArea";
+import RestaurantInfo from "./components/main/RestaurantInfo";
 import axios from "axios";
 import "./App.css";
+import RestaurantItem from "./components/main/RestaurantItem";
 
 const apikey = process.env.REACT_APP_API_KEY;
 
@@ -15,6 +18,7 @@ export class App extends Component {
         latitude: 0,
         longitude: 0,
         restaurants: null,
+        restaurant: [],
         loaded: false,
         alert: null,
     };
@@ -23,16 +27,6 @@ export class App extends Component {
         console.log("Getting location");
         this.getLocation();
     }
-
-    /*componentDidUpdate(_prevProps, prevState) {
-        if (
-            prevState.longitude !== this.state.longitude &&
-            prevState.latitude !== this.state.latitude
-        ) {
-            console.log("getting restaurants");
-            this.getRestaurants();
-        }
-    }*/
 
     getLocation = () => {
         if (navigator.geolocation) {
@@ -83,25 +77,54 @@ export class App extends Component {
         }, 5000);
     };
 
+    getResDetail = async (resid) => {
+        this.setState({ loaded: false });
+        axios
+            .get(
+                `https://developers.zomato.com/api/v2.1/restaurant?res_id=${resid}`,
+                config
+            )
+            .then((res) => {
+                this.setState({ restaurant: res.data }, () => {
+                    this.setState({ loaded: true });
+                });
+            });
+    };
+
     render() {
         const { latitude, longitude, alert } = this.state;
         return (
-            <div style={{ marginTop: "0px", paddingTop: "0px" }}>
-                <Navbar />
-                <Alert alert={alert} />
-                <Search
-                    getRestaurants={this.getRestaurants}
-                    lat={latitude}
-                    lon={longitude}
-                    getLocation={this.getLocation}
-                    showAlert={this.showAlert}
-                />
-                <ListArea
-                    restaurantlist={
-                        this.state.loaded ? this.state.restaurants : null
-                    }
-                />
-            </div>
+            <Router>
+                <div style={{ marginTop: "0px", paddingTop: "0px" }}>
+                    <Switch>
+                        <Route exact path='/:resid'>
+                            <RestaurantInfo
+                                resinfo={this.state.restaurant}
+                                loaded={this.state.loaded}
+                            />
+                        </Route>
+                        <Route exact path='/'>
+                            <Navbar />
+                            <Alert alert={alert} />
+                            <Search
+                                getRestaurants={this.getRestaurants}
+                                lat={latitude}
+                                lon={longitude}
+                                getLocation={this.getLocation}
+                                showAlert={this.showAlert}
+                            />
+                            <ListArea
+                                restaurantlist={
+                                    this.state.loaded
+                                        ? this.state.restaurants
+                                        : null
+                                }
+                                getinfo={this.getResDetail}
+                            />
+                        </Route>
+                    </Switch>
+                </div>
+            </Router>
         );
     }
 }

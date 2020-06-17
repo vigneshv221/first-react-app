@@ -6,12 +6,16 @@ export class ListArea extends Component {
         restaurants: null,
     };
     render() {
-        const { restaurantlist } = this.props;
+        const { restaurantlist, getinfo } = this.props;
         if (restaurantlist) {
             return (
-                <div className='listgrid width-auto'>
+                <div className='listgrid width-80'>
                     {restaurantlist.map((restobj, index) => (
-                        <RestaurantItem key={index} restaurantobj={restobj} />
+                        <RestaurantItem
+                            key={index}
+                            restaurantobj={restobj}
+                            getinfo={getinfo}
+                        />
                     ))}
                 </div>
             );
